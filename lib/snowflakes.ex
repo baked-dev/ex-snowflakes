@@ -14,6 +14,14 @@ defmodule Snowflakes do
     )
   end
 
+  def start_link(signing_key) do
+    GenServer.start_link(
+      __MODULE__,
+      %__MODULE__{signing_key: signing_key, node_id: 1023, seq: 0},
+      name: :snowflakes
+    )
+  end
+
   def init(state) do
     {:ok, state}
   end
