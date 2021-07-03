@@ -34,6 +34,11 @@ defmodule Snowflakes do
     {:reply, res, state}
   end
 
+  def handle_call({:gen_parent, snowflake, type}, _from, state) when is_binary(snowflake) do
+    res = gen_parent(state.signing_key, snowflake, type)
+    {:reply, res, state}
+  end
+
   def gen(signing_key, node_id, seq, type, payloads) when is_list(payloads) do
     payloads = Enum.map(payloads, fn el -> String.reverse(el) end)
 
@@ -79,6 +84,13 @@ defmodule Snowflakes do
 
   def gen(signing_key, type, parent) when is_binary(parent) do
     gen(signing_key, 1023, 0, type, parent)
+  end
+
+  def gen_parent(signing_key, snowflake, type) do
+    with {:ok, _type, _data, _sig, _ts, _seq, [data | parents]} <- read(snowflake) do
+      parents = Enum.map(parents, fn el -> String.reverse(el) end)
+      "#{type}_#{sign(signing_key, type, [data] ++ parents)}"
+    end
   end
 
   def sign(signing_key, type, payloads) do

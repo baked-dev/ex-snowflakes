@@ -26,9 +26,10 @@ defmodule SnowflakesTest do
     {:ok, pid} = Snowflakes.start_link("test_signing_key", 1023)
 
     res = GenServer.call(pid, {:gen, "test"})
-    res = GenServer.call(pid, {:gen, "test"})
-    res = GenServer.call(pid, {:gen, "test"})
-    res = GenServer.call(pid, {:gen, "test"})
+    res2 = GenServer.call(pid, {:gen, "test", res})
+    res3 = GenServer.call(pid, {:gen_parent, res2, "test"})
     IO.inspect(res)
+    IO.inspect(res2)
+    IO.inspect(res3)
   end
 end
