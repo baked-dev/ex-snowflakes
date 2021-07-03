@@ -47,7 +47,7 @@ defmodule Snowflakes do
   end
 
   def gen(signing_key, node_id, seq, type, payloads) when is_list(payloads) do
-    payloads = Enum.map(payloads, fn el -> String.reverse(el) end)
+    payloads = Enum.map_every(payloads, 2, fn el -> String.reverse(el) end)
 
     ts =
       (:os.system_time(:millisecond) - 1_618_868_000_000)
@@ -95,7 +95,7 @@ defmodule Snowflakes do
 
   def gen_parent(signing_key, snowflake, type) do
     with {:ok, _type, _data, _sig, _ts, _seq, [data | parents]} <- read(snowflake) do
-      parents = Enum.map(parents, fn el -> String.reverse(el) end)
+      parents = Enum.map_every(parents, 2, fn el -> String.reverse(el) end)
       "#{type}_#{sign(signing_key, type, [data] ++ parents)}"
     end
   end
@@ -139,7 +139,7 @@ defmodule Snowflakes do
   def verify(signing_key, snowflake) do
     {:ok, type, data, sig, ts, seq, parents} = read(snowflake)
 
-    reversed_parents = Enum.map(parents, fn el -> String.reverse(el) end)
+    reversed_parents = Enum.map_every(parents, 2, fn el -> String.reverse(el) end)
     arg = [data] ++ reversed_parents
     signature = get_signature(signing_key, type, arg)
 
@@ -185,7 +185,7 @@ defmodule Snowflakes do
       |> Enum.reverse()
 
     parents =
-      Enum.map(parents, fn element ->
+      Enum.map_every(parents, 2, fn element ->
         String.reverse(element)
       end)
 
