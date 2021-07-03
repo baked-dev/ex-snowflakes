@@ -15,7 +15,6 @@ defmodule Snowflakes do
   end
 
   def init(state) do
-    IO.inspect(state)
     {:ok, state}
   end
 
@@ -70,8 +69,8 @@ defmodule Snowflakes do
   end
 
   def gen(signing_key, node_id, seq, type, parent) when is_binary(parent) do
-    {:ok, _type, data, _sig, _ts, _seq, _parents} = read(parent)
-    gen(signing_key, node_id, seq, type, [data])
+    {:ok, _type, data, _sig, _ts, _seq, parents} = read(parent)
+    gen(signing_key, node_id, seq, type, [data | parents])
   end
 
   def gen(signing_key, node_id, seq, type) do
