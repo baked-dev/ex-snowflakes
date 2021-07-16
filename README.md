@@ -3,6 +3,7 @@
 compatible with:
 
 - (ts/js) https://github.com/baked-dev/snowflakes
+- (go) https://github.com/baked-dev/go_snowflakes
 
 **TODO: Add description**
 
